@@ -6,10 +6,11 @@ import {
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { Readable } from 'stream';
+import { IAwsService } from '../../App/Ports/IAwsService';
 import { EnvVariablesEnum } from '../../Domain/Shared/Enums/EnvVariablesEnum';
 
 @Injectable()
-export class AwsService {
+export class AwsService implements IAwsService {
   private readonly bucketName: string;
   private readonly s3Client: S3Client;
 
@@ -41,7 +42,7 @@ export class AwsService {
     console.log(listResponse.Contents);
   }
 
-  async getFile(key: string) {
+  async getFile(key: string): Promise<Readable> {
     const command = new GetObjectCommand({
       Bucket: this.bucketName,
       Key: key,
