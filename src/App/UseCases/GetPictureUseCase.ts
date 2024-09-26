@@ -16,9 +16,18 @@ export class GetPictureUsecase {
   async execute(key: string, params: IPictureQuery): Promise<Picture> {
     const picture = new Picture(params).setFilename(key);
 
-    const getImageAws = await this.awsService.getFile(key);
+    let image: Buffer = this.localService.findImage(
+      picture.getFilename(),
+      picture.getFormat(),
+    );
 
-    picture.setBuffer(await this.imagesService.bufferizeImage(getImageAws));
+    if (!image) {
+      const getImageAws = await this.awsService.getFile(key);
+
+      image = await this.imagesService.bufferizeImage(getImageAws);
+    }
+
+    picture.setBuffer(image);
 
     await this.localService.saveImage(
       picture.getBuffer(),

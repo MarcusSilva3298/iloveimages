@@ -1,10 +1,11 @@
 import { Injectable } from '@nestjs/common';
-import { existsSync, mkdirSync } from 'fs';
+import { existsSync, mkdirSync, readFileSync } from 'fs';
 import * as path from 'path';
 import * as sharp from 'sharp';
+import { ILocalService } from '../../App/Ports/ILocalService';
 
 @Injectable()
-export class LocalService {
+export class LocalService implements ILocalService {
   private readonly bucketPath: string = path.resolve(
     __dirname,
     '..',
@@ -17,6 +18,13 @@ export class LocalService {
   constructor() {
     if (!existsSync(this.bucketPath))
       mkdirSync(this.bucketPath, { recursive: true });
+  }
+
+  findImage(filename: string, format: string): Buffer {
+    const imagePath = path.resolve(this.bucketPath, `${filename}.${format}`);
+
+    if (!existsSync(imagePath)) return null;
+    return readFileSync(imagePath);
   }
 
   async saveImage(
