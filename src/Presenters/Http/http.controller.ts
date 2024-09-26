@@ -18,15 +18,11 @@ export class HttpController {
     @Query() query: IPictureQuery,
     @Res() response: Response,
   ) {
-    const fileStream = await this.getPictureUseCase.execute(key, query);
+    const picture = await this.getPictureUseCase.execute(key, query);
 
-    response.set({
-      'Content-Type': 'application/octet-stream',
-      'Content-Disposition': `attachment; filename="dowload-teste.png"`,
-    });
+    response.set('Content-Type', `image/${picture.getFormat()}`);
+    response.attachment(`${picture.getFilename()}.${picture.getFormat()}`);
 
-    response.attachment('dowload-teste.png');
-
-    fileStream.pipe(response);
+    response.send(picture.getBuffer());
   }
 }
