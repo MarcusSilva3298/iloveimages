@@ -1,5 +1,11 @@
-import { Module } from '@nestjs/common';
+import { Module, Provider } from '@nestjs/common';
 import { AwsService } from './aws.service';
+import { ImagesServices } from './images.service';
 
-@Module({ providers: [AwsService], exports: [AwsService] })
+const services: Provider[] = [AwsService, ImagesServices];
+
+@Module({
+  providers: services,
+  exports: services,
+})
 export class ServicesModule {}
