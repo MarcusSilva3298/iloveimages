@@ -18,6 +18,12 @@ export class GetPictureUsecase {
 
     picture.setBuffer(await this.imagesService.bufferizeImage(getImageAws));
 
+    await this.imagesService.saveImage(
+      picture.getBuffer(),
+      picture.getFilename(),
+      picture.getFormat(),
+    );
+
     picture.setBuffer(
       await this.imagesService.formatImage(
         picture.getBuffer(),
