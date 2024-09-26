@@ -21,11 +21,7 @@ export class GetPictureUsecase {
       picture.getFormat(),
     );
 
-    if (!image) {
-      const getImageAws = await this.awsService.getFile(key);
-
-      image = await this.imagesService.bufferizeImage(getImageAws);
-    }
+    if (!image) image = await this.awsService.getImage(key);
 
     picture.setBuffer(image);
 

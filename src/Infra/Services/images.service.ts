@@ -1,19 +1,10 @@
 import { Injectable } from '@nestjs/common';
 import * as sharp from 'sharp';
-import { Readable } from 'stream';
+import { IImagesService } from '../../App/Ports/IImagesService';
 import { IPictureFormatProps } from '../../Domain/Shared/Interfaces/IPictureFormatProps';
 
 @Injectable()
-export class ImagesServices {
-  async bufferizeImage(image: Readable): Promise<Buffer> {
-    return new Promise((resolve, reject) => {
-      const chunks: any[] = [];
-      image.on('data', (chunk) => chunks.push(chunk));
-      image.on('end', () => resolve(Buffer.concat(chunks)));
-      image.on('error', reject);
-    });
-  }
-
+export class ImagesServices implements IImagesService {
   async formatImage(
     image: Buffer,
     props: IPictureFormatProps,

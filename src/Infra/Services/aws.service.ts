@@ -1,11 +1,7 @@
-import {
-  GetObjectCommand,
-  ListObjectsV2Command,
-  S3Client,
-} from '@aws-sdk/client-s3';
+import { ListObjectsV2Command, S3Client } from '@aws-sdk/client-s3';
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { Readable } from 'stream';
+import axios from 'axios';
 import { IAwsService } from '../../App/Ports/IAwsService';
 import { EnvVariablesEnum } from '../../Domain/Shared/Enums/EnvVariablesEnum';
 
@@ -42,13 +38,15 @@ export class AwsService implements IAwsService {
     console.log(listResponse.Contents);
   }
 
-  async getFile(key: string): Promise<Readable> {
-    const command = new GetObjectCommand({
-      Bucket: this.bucketName,
-      Key: key,
+  async getImage(key: string): Promise<Buffer> {
+    const axiosResponse = await axios({
+      url: `https://d15gw9m6f1r81r.cloudfront.net/${key}`,
+      method: 'GET',
+      responseType: 'arraybuffer',
     });
 
-    const response = await this.s3Client.send(command);
-    return response.Body as Readable;
+    const imageBuffer = Buffer.from(axiosResponse.data);
+
+    return imageBuffer;
   }
 }
