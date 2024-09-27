@@ -16,7 +16,7 @@ COPY --chown=node:node --from=builder /usr/src/app/node_modules /usr/src/app/nod
 COPY --chown=node:node . /usr/src/app
 
 ENV ACCESS_KEY_ID=AKIAQXPZDKPZIMJ3CM5B
-ENV ACCESS_KEY_SECRET=X4mTFGAHgfUgBjAhsamJcUZbGyUmBhwoUxQvlJG
+ENV ACCESS_KEY_SECRET=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
 
 EXPOSE 3000
 
