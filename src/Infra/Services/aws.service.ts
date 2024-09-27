@@ -40,7 +40,9 @@ export class AwsService implements IAwsService {
 
   async getImage(key: string): Promise<Buffer> {
     const axiosResponse = await axios({
-      url: `https://d15gw9m6f1r81r.cloudfront.net/${key}`,
+      url: this.configService
+        .get<string>(EnvVariablesEnum.AWS_CLOUDFRONT_URL)
+        .concat(key),
       method: 'GET',
       responseType: 'arraybuffer',
     });
