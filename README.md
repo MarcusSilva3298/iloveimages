@@ -38,8 +38,8 @@ This **NestJS** project is responsible for fetching, listing, and processing ima
 
 1. Clone the repository:
    ```bash
-   git clone https://github.com/your-username/your-repository.git
-   cd your-repository
+   git clone https://github.com/MarcusSilva3298/iloveimages.git
+   cd iloveimages
    ```
 2. Run the project with Docker Compose:
    ```bash
