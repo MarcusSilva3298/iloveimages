@@ -28,14 +28,14 @@ export class AwsService implements IAwsService {
     });
   }
 
-  async listFiles() {
+  async listFiles(): Promise<string[]> {
     const listCommand = new ListObjectsV2Command({
       Bucket: this.bucketName,
     });
 
     const listResponse = await this.s3Client.send(listCommand);
 
-    console.log(listResponse.Contents);
+    return listResponse.Contents.map((image) => image.Key);
   }
 
   async getImage(key: string): Promise<Buffer> {
