@@ -1,4 +1,4 @@
 export interface ILocalService {
-  findImage(filename: string, format: string): Buffer;
-  saveImage(image: Buffer, filename: string, format: string): Promise<void>;
+  findImage(id: string): Promise<Buffer>;
+  saveImage(id: string, image: Buffer): Promise<void>;
 }

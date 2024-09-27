@@ -1,39 +1,28 @@
-import { Injectable } from '@nestjs/common';
-import { existsSync, mkdirSync, readFileSync } from 'fs';
-import * as path from 'path';
-import * as sharp from 'sharp';
+import { Injectable, Logger } from '@nestjs/common';
+import Redis from 'ioredis';
 import { ILocalService } from '../../App/Ports/ILocalService';
 
 @Injectable()
 export class LocalService implements ILocalService {
-  private readonly bucketPath: string = path.resolve(
-    __dirname,
-    '..',
-    '..',
-    '..',
-    'bucket',
-    'pictures',
-  );
+  private readonly redis: Redis;
 
   constructor() {
-    if (!existsSync(this.bucketPath))
-      mkdirSync(this.bucketPath, { recursive: true });
+    this.redis = new Redis({
+      host: 'localhost',
+      port: 6379,
+    }).on('error', (err) => {
+      Logger.error(err, 'RedisService');
+      Logger.fatal('Encerrando serviço');
+
+      process.exit(1);
+    });
   }
 
-  findImage(filename: string, format: string): Buffer {
-    const imagePath = path.resolve(this.bucketPath, `${filename}.${format}`);
-
-    if (!existsSync(imagePath)) return null;
-    return readFileSync(imagePath);
+  async findImage(id: string): Promise<Buffer> {
+    return await this.redis.getBuffer(id);
   }
 
-  async saveImage(
-    image: Buffer,
-    filename: string,
-    format: string,
-  ): Promise<void> {
-    const imagePath = path.resolve(this.bucketPath, `${filename}.${format}`);
-
-    await sharp(image).toFile(imagePath);
+  async saveImage(id: string, image: Buffer): Promise<void> {
+    await this.redis.set(id, image, 'EX', 50000);
   }
 }

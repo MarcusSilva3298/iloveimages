@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { Picture } from '../../Domain/Shared/Entities/Picture';
 import { IPictureQuery } from '../../Domain/Shared/Interfaces/IPictureQuery';
 import { AwsService } from '../../Infra/Services/aws.service';
@@ -16,27 +16,32 @@ export class GetPictureUsecase {
   async execute(key: string, params: IPictureQuery): Promise<Picture> {
     const picture = new Picture(params).setFilename(key);
 
-    let image: Buffer = this.localService.findImage(
-      picture.getFilename(),
-      picture.getFormat(),
+    const imageExistsInLocal = await this.localService.findImage(
+      picture.getRedisKey(),
     );
 
-    if (!image) image = await this.awsService.getImage(key);
+    if (imageExistsInLocal) {
+      console.log('Imagem local');
 
-    picture.setBuffer(image);
+      picture.setBuffer(imageExistsInLocal);
 
-    await this.localService.saveImage(
-      picture.getBuffer(),
-      picture.getFilename(),
-      picture.getFormat(),
+      return picture;
+    }
+
+    console.log('Imagem aws');
+
+    const originalImage = await this.awsService.getImage(key);
+
+    if (!originalImage) throw new NotFoundException('Picture not found!');
+
+    const processedImage = await this.imagesService.processImage(
+      originalImage,
+      picture.getProcessProps(),
     );
 
-    picture.setBuffer(
-      await this.imagesService.formatImage(
-        picture.getBuffer(),
-        picture.getFormatProps(),
-      ),
-    );
+    this.localService.saveImage(picture.getRedisKey(), processedImage);
+
+    picture.setBuffer(processedImage);
 
     return picture;
   }

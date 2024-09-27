@@ -1,0 +1,16 @@
+version: '3.9'
+
+services:
+  redis:
+    container_name: redis
+    image: redis:7.0.10-alpine
+    restart: always
+    ports:
+      - '6379:6379'
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+    command: redis-server
+    volumes:
+      - "./redis/data:/data"
