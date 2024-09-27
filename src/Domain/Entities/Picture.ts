@@ -1,28 +1,43 @@
 import { PictureQueryDto } from '../Shared/Dtos/PictureQueryDto';
+import { PicturesFormatsEnum } from '../Shared/Enums/PicturesFormatsEnum';
 import { IPictureFormatProps } from '../Shared/Interfaces/IPictureFormatProps';
 
 export class Picture {
   private quality: number;
   private format: string;
   private width?: number;
-  private heigth?: number;
+  private height?: number;
   private grayscale: boolean;
   private pictureAsBuffer: Buffer;
   private filename: string;
 
-  constructor(props: PictureQueryDto) {
+  constructor(key: string, props: PictureQueryDto) {
     this.quality = props.q || 85;
-    this.format = props.fm || undefined;
     this.width = props.w || null;
-    this.heigth = props.h || null;
+    this.height = props.h || null;
     this.grayscale = props.gray === '1';
+
+    const [filename, originalFormat] = key.split('.');
+    this.filename = filename;
+    this.format = this.chooseFormat(originalFormat, props.fm);
   }
 
-  public setFilename(key: string): this {
-    const [filename, format] = key.split('.');
-    this.filename = filename;
-    this.format = this.format || format;
-    return this;
+  private chooseFormat(
+    originalFormat: string,
+    requestFormat: string,
+  ): string | undefined {
+    if (requestFormat) return requestFormat;
+
+    if (this.grayscale && this.quality >= 90)
+      return PicturesFormatsEnum.PNG as string;
+
+    if (this.quality < 80 && !this.grayscale)
+      return PicturesFormatsEnum.JPG as string;
+
+    if (this.quality >= 80 || this.width * this.height > 1000000)
+      return PicturesFormatsEnum.WEBP as string;
+
+    return originalFormat;
   }
 
   public setBuffer(buffer: Buffer): this {
@@ -31,13 +46,13 @@ export class Picture {
   }
 
   public getRedisKey(): string {
-    return `${this.filename}.${this.format}_${this.quality}_${this.width}_${this.heigth}_${String(this.grayscale)}`;
+    return `${this.filename}.${this.format}_${this.quality}_${this.width}_${this.height}_${String(this.grayscale)}`;
   }
 
   public getProcessProps(): IPictureFormatProps {
     return {
       width: this.width,
-      height: this.heigth,
+      height: this.height,
       format: this.format,
       quality: this.quality,
       grayscale: this.grayscale,

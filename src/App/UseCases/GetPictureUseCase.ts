@@ -14,7 +14,7 @@ export class GetPictureUsecase {
   ) {}
 
   async execute(key: string, params: PictureQueryDto): Promise<Picture> {
-    const picture = new Picture(params).setFilename(key);
+    const picture = new Picture(key, params);
 
     const imageExistsInLocal = await this.localService.findImage(
       picture.getRedisKey(),
