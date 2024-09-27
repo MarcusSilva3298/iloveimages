@@ -1,5 +1,5 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { Picture } from '../../Domain/Shared/Entities/Picture';
+import { Picture } from '../../Domain/Entities/Picture';
 import { IPictureQuery } from '../../Domain/Shared/Interfaces/IPictureQuery';
 import { AwsService } from '../../Infra/Services/aws.service';
 import { ImagesServices } from '../../Infra/Services/images.service';

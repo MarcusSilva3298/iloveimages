@@ -1,5 +1,5 @@
-import { IPictureFormatProps } from '../Interfaces/IPictureFormatProps';
-import { IPictureQuery } from '../Interfaces/IPictureQuery';
+import { IPictureFormatProps } from '../Shared/Interfaces/IPictureFormatProps';
+import { IPictureQuery } from '../Shared/Interfaces/IPictureQuery';
 
 export class Picture {
   private quality: number;
