@@ -33,7 +33,6 @@ This **NestJS** project is responsible for fetching, listing, and processing ima
 
 - [Docker](https://www.docker.com/) installed.
 - [Docker Compose](https://docs.docker.com/compose/) installed.
-- AWS credentials configured to access S3 (can be done with [AWS CLI](https://aws.amazon.com/cli/)).
 
 ### Steps to run the project
 
