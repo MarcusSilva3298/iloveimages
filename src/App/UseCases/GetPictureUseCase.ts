@@ -1,16 +1,18 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { NotFoundException } from '@nestjs/common';
 import { Picture } from '../../Domain/Entities/Picture';
 import { PictureQueryDto } from '../../Domain/Shared/Dtos/PictureQueryDto';
-import { AwsService } from '../../Infra/Services/aws.service';
-import { ImagesServices } from '../../Infra/Services/images.service';
-import { LocalService } from '../../Infra/Services/local.service';
+import { IAwsService } from '../Ports/IAwsService';
+import { IImagesService } from '../Ports/IImagesService';
+import { ILocalService } from '../Ports/ILocalService';
+import { IUseCase } from '../Ports/IUseCase';
 
-@Injectable()
-export class GetPictureUsecase {
+export class GetPictureUsecase
+  implements IUseCase<Picture, [string, PictureQueryDto]>
+{
   constructor(
-    private readonly awsService: AwsService,
-    private readonly imagesService: ImagesServices,
-    private readonly localService: LocalService,
+    private readonly awsService: IAwsService,
+    private readonly imagesService: IImagesService,
+    private readonly localService: ILocalService,
   ) {}
 
   async execute(key: string, params: PictureQueryDto): Promise<Picture> {

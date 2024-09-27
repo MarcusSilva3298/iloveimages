@@ -1,11 +1,13 @@
 import { Module } from '@nestjs/common';
 import { ServicesModule } from '../Infra/Services/services.module';
-import { GetPictureUsecase } from './UseCases/GetPictureUseCase';
-import { ListPicturesUseCase } from './UseCases/ListPicturesUseCase';
+import {
+  picturesExports,
+  picturesProviders,
+} from './Providers/PicturesUseCasesProviders';
 
 @Module({
   imports: [ServicesModule],
-  providers: [GetPictureUsecase, ListPicturesUseCase],
-  exports: [GetPictureUsecase, ListPicturesUseCase],
+  providers: [...picturesProviders],
+  exports: [...picturesExports],
 })
 export class AppModule {}

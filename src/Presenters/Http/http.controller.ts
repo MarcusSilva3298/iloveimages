@@ -1,14 +1,21 @@
-import { Controller, Get, Param, Query, Res } from '@nestjs/common';
+import { Controller, Get, Inject, Param, Query, Res } from '@nestjs/common';
 import { Response } from 'express';
-import { GetPictureUsecase } from '../../App/UseCases/GetPictureUseCase';
-import { ListPicturesUseCase } from '../../App/UseCases/ListPicturesUseCase';
+import { IUseCase } from '../../App/Ports/IUseCase';
+import { Picture } from '../../Domain/Entities/Picture';
 import { PictureQueryDto } from '../../Domain/Shared/Dtos/PictureQueryDto';
+import { PicturesUseCasesEnum } from '../../Domain/Shared/Enums/PicturesUseCasesEnum';
 
 @Controller('/')
 export class HttpController {
   constructor(
-    private readonly getPictureUseCase: GetPictureUsecase,
-    private readonly listPicturesUseCase: ListPicturesUseCase,
+    @Inject(PicturesUseCasesEnum.GET_PICTURE_USE_CASE)
+    private readonly getPictureUseCase: IUseCase<
+      Picture,
+      [string, PictureQueryDto]
+    >,
+
+    @Inject(PicturesUseCasesEnum.LIST_PICTURES_USE_CASE)
+    private readonly listPicturesUseCase: IUseCase<string[]>,
   ) {}
 
   @Get()
