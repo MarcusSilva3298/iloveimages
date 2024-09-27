@@ -26,8 +26,6 @@ export class GetPictureUsecase {
       return picture;
     }
 
-    console.log('Imagem aws');
-
     const originalImage = await this.awsService.getImage(key);
 
     if (!originalImage) throw new NotFoundException('Picture not found!');
