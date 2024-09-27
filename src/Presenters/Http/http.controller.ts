@@ -1,7 +1,7 @@
 import { Controller, Get, Param, Query, Res } from '@nestjs/common';
 import { Response } from 'express';
 import { GetPictureUsecase } from '../../App/UseCases/GetPictureUseCase';
-import { IPictureQuery } from '../../Domain/Shared/Interfaces/IPictureQuery';
+import { PictureQueryDto } from '../../Domain/Shared/Dtos/PictureQueryDto';
 
 @Controller('/')
 export class HttpController {
@@ -15,9 +15,11 @@ export class HttpController {
   @Get('/pictures/:key')
   async getPicture(
     @Param('key') key: string,
-    @Query() query: IPictureQuery,
+    @Query() query: PictureQueryDto,
     @Res() response: Response,
   ) {
+    console.log(typeof query.q);
+
     const picture = await this.getPictureUseCase.execute(key, query);
 
     response.set('Content-Type', `image/${picture.getFormat()}`);

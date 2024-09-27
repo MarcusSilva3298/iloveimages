@@ -1,6 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { Picture } from '../../Domain/Entities/Picture';
-import { IPictureQuery } from '../../Domain/Shared/Interfaces/IPictureQuery';
+import { PictureQueryDto } from '../../Domain/Shared/Dtos/PictureQueryDto';
 import { AwsService } from '../../Infra/Services/aws.service';
 import { ImagesServices } from '../../Infra/Services/images.service';
 import { LocalService } from '../../Infra/Services/local.service';
@@ -13,7 +13,7 @@ export class GetPictureUsecase {
     private readonly localService: LocalService,
   ) {}
 
-  async execute(key: string, params: IPictureQuery): Promise<Picture> {
+  async execute(key: string, params: PictureQueryDto): Promise<Picture> {
     const picture = new Picture(params).setFilename(key);
 
     const imageExistsInLocal = await this.localService.findImage(

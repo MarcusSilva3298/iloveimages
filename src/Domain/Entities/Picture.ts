@@ -1,5 +1,5 @@
+import { PictureQueryDto } from '../Shared/Dtos/PictureQueryDto';
 import { IPictureFormatProps } from '../Shared/Interfaces/IPictureFormatProps';
-import { IPictureQuery } from '../Shared/Interfaces/IPictureQuery';
 
 export class Picture {
   private quality: number;
@@ -10,11 +10,11 @@ export class Picture {
   private pictureAsBuffer: Buffer;
   private filename: string;
 
-  constructor(props: IPictureQuery) {
-    this.quality = Number(props.q) || 85;
+  constructor(props: PictureQueryDto) {
+    this.quality = props.q || 85;
     this.format = props.fm || undefined;
-    this.width = Number(props.w) || null;
-    this.heigth = Number(props.h) || null;
+    this.width = props.w || null;
+    this.heigth = props.h || null;
     this.grayscale = props.gray === '1';
   }
 
