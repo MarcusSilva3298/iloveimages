@@ -21,8 +21,6 @@ export class GetPictureUsecase {
     );
 
     if (imageExistsInLocal) {
-      console.log('Imagem local');
-
       picture.setBuffer(imageExistsInLocal);
 
       return picture;

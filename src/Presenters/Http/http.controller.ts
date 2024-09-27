@@ -18,8 +18,6 @@ export class HttpController {
     @Query() query: PictureQueryDto,
     @Res() response: Response,
   ) {
-    console.log(typeof query.q);
-
     const picture = await this.getPictureUseCase.execute(key, query);
 
     response.set('Content-Type', `image/${picture.getFormat()}`);
