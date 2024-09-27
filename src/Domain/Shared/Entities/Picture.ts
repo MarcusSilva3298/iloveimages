@@ -30,7 +30,11 @@ export class Picture {
     return this;
   }
 
-  public getFormatProps(): IPictureFormatProps {
+  public getRedisKey(): string {
+    return `${this.filename}.${this.format}_${this.quality}_${this.width}_${this.heigth}_${String(this.grayscale)}`;
+  }
+
+  public getProcessProps(): IPictureFormatProps {
     return {
       width: this.width,
       height: this.heigth,

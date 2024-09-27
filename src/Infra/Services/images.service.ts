@@ -5,7 +5,7 @@ import { IPictureFormatProps } from '../../Domain/Shared/Interfaces/IPictureForm
 
 @Injectable()
 export class ImagesServices implements IImagesService {
-  async formatImage(
+  async processImage(
     image: Buffer,
     props: IPictureFormatProps,
   ): Promise<Buffer> {
