@@ -1,9 +1,9 @@
 import { Module, Provider } from '@nestjs/common';
-import { PrismaClient } from '@prisma/client';
-import { UsersRepository } from './repositories/users.repository';
+import { PrismaService } from './prisma.service';
 import { PicturesRepository } from './repositories/pictures.repository';
+import { UsersRepository } from './repositories/users.repository';
 
 const repositories: Provider[] = [UsersRepository, PicturesRepository];
 
-@Module({ providers: [PrismaClient, ...repositories], exports: repositories })
+@Module({ providers: [PrismaService, ...repositories], exports: repositories })
 export class DatabaseModule {}
