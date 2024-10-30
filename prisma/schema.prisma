@@ -20,7 +20,7 @@ model User {
   password String
 
   name           String
-  alias          String
+  alias          String  @unique
   profilePicture String?
 
   Pictures Picture[]
