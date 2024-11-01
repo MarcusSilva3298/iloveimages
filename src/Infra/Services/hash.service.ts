@@ -8,7 +8,7 @@ export class HashService implements IHashService {
     return await hash(password, 6);
   }
 
-  async compareHash(string: string, hash: string): Promise<boolean> {
-    return await compare(string, hash);
+  async compareHash(password: string, hash: string): Promise<boolean> {
+    return await compare(password, hash);
   }
 }
