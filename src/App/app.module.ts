@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common';
 import { DatabaseModule } from '../Infra/Database/database.module';
 import { ServicesModule } from '../Infra/Services/services.module';
+import { authExports, authProviders } from './Providers/AuthUseCasesProvider';
 import {
   picturesExports,
   picturesProviders,
@@ -12,7 +13,7 @@ import {
 
 @Module({
   imports: [ServicesModule, DatabaseModule],
-  providers: [...picturesProviders, ...usersProviders],
-  exports: [...picturesExports, ...usersExports],
+  providers: [...picturesProviders, ...usersProviders, ...authProviders],
+  exports: [...picturesExports, ...usersExports, ...authExports],
 })
 export class AppModule {}
