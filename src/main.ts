@@ -1,9 +1,12 @@
 import { Logger, ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
+import { HttpExceptionFilter } from './Presenters/Http/Filters/http-exception.filter';
 import { SoruceModule } from './source.module';
 
 async function bootstrap() {
   const app = await NestFactory.create(SoruceModule);
+
+  app.useGlobalFilters(new HttpExceptionFilter());
 
   app.useGlobalPipes(
     new ValidationPipe({
