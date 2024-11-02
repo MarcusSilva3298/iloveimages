@@ -1,8 +1,20 @@
 import { PictureQueryDto } from '../Shared/Dtos/PictureQueryDto';
 import { PicturesFormatsEnum } from '../Shared/Enums/PicturesFormatsEnum';
 import { IPictureFormatProps } from '../Shared/Interfaces/IPictureFormatProps';
+import { User } from './User';
 
 export class Picture {
+  readonly id: string;
+
+  public location: string;
+
+  public title: string;
+  public tags: string;
+  public description: string;
+
+  public User?: User;
+  public userId: string;
+
   private quality: number;
   private format: string;
   private width?: number;

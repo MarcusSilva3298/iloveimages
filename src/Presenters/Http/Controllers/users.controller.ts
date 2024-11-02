@@ -5,20 +5,19 @@ import {
   Get,
   Inject,
   Param,
-  Post,
   Put,
+  UseGuards,
 } from '@nestjs/common';
 import { IUseCase } from '../../../App/Ports/IUseCase';
 import { User } from '../../../Domain/Entities/User';
 import { UserFactoryDto } from '../../../Domain/Shared/Dtos/User/UserFactoryDto';
 import { UsersUseCasesEnum } from '../../../Domain/Shared/Enums/UsersUseCasesEnum';
+import { AuthGuard } from '../Guards/auth.guard';
 
+@UseGuards(AuthGuard)
 @Controller('/users')
 export class UsersController {
   constructor(
-    @Inject(UsersUseCasesEnum.CREATE_USER)
-    private readonly createUserUseCase: IUseCase<User, [UserFactoryDto]>,
-
     @Inject(UsersUseCasesEnum.UPDATE_USER)
     private readonly updateUserUseCase: IUseCase<
       User,
@@ -31,11 +30,6 @@ export class UsersController {
     @Inject(UsersUseCasesEnum.DELETE_USER)
     private readonly deleteUseruseCase: IUseCase<User, [string]>,
   ) {}
-
-  @Post()
-  create(@Body() body: UserFactoryDto): Promise<User> {
-    return this.createUserUseCase.execute(body);
-  }
 
   @Put('/:id')
   update(@Param('id') id: string, @Body() body: UserFactoryDto): Promise<User> {

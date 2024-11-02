@@ -8,6 +8,7 @@ import { IUserRepository } from '../Ports/Repositories/IUserRepository';
 import { IHashService } from '../Ports/Services/IHashService';
 import { ITokenService } from '../Ports/Services/ITokenService';
 import { SignInUseCase } from '../UseCases/Auth/SignInUseCase';
+import { SignUpUseCase } from '../UseCases/Auth/SignUpUseCase';
 
 export const authExports: string[] = Object.values(AuthUseCasesEnum);
 
@@ -19,13 +20,15 @@ export const authProviders: Provider[] = [
       usersRepository: IUserRepository,
       hashService: IHashService,
       tokenSerice: ITokenService,
-      configService: ConfigService,
-    ) =>
-      new SignInUseCase(
-        usersRepository,
-        hashService,
-        tokenSerice,
-        configService,
-      ),
+    ) => new SignInUseCase(usersRepository, hashService, tokenSerice),
+  },
+  {
+    provide: AuthUseCasesEnum.SIGN_UP,
+    inject: [UsersRepository, HashService, TokenService, ConfigService],
+    useFactory: (
+      usersRepository: IUserRepository,
+      hashService: IHashService,
+      tokenSerice: ITokenService,
+    ) => new SignUpUseCase(usersRepository, hashService, tokenSerice),
   },
 ];
