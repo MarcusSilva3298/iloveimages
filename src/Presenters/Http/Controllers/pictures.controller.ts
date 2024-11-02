@@ -1,10 +1,20 @@
-import { Controller, Get, Inject, Param, Query, Res } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Inject,
+  Param,
+  Query,
+  Res,
+  UseGuards,
+} from '@nestjs/common';
+import { Response } from 'express';
 import { IUseCase } from '../../../App/Ports/IUseCase';
 import { Picture } from '../../../Domain/Entities/Picture';
 import { PictureQueryDto } from '../../../Domain/Shared/Dtos/PictureQueryDto';
 import { PicturesUseCasesEnum } from '../../../Domain/Shared/Enums/PicturesUseCasesEnum';
-import { Response } from 'express';
+import { AuthGuard } from '../Guards/auth.guard';
 
+@UseGuards(AuthGuard)
 @Controller('/pictures')
 export class PicturesController {
   constructor(
