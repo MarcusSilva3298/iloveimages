@@ -29,6 +29,8 @@ export class SignInUseCase implements IUseCase<ISignResponse, [SignInDto]> {
 
     const refreshToken = this.tokenService.signRefresh({ id: userExists.id });
 
-    return { accessToken, refreshToken };
+    delete userExists.password;
+
+    return { accessToken, refreshToken, user: userExists };
   }
 }

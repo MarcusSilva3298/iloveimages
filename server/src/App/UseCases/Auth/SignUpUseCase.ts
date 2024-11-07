@@ -33,6 +33,8 @@ export class SignUpUseCase
 
     const refreshToken = this.tokenService.signRefresh({ id: createdUser.id });
 
-    return { accessToken, refreshToken };
+    delete createdUser.password;
+
+    return { accessToken, refreshToken, user: createdUser };
   }
 }
