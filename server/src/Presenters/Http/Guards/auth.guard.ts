@@ -28,6 +28,8 @@ export class AuthGuard implements CanActivate {
 
     if (!userExists) throw new UnauthorizedException('Invalid Token Content!');
 
+    request['user'] = userExists;
+
     return true;
   }
 
