@@ -1,3 +1,3 @@
-export interface IUseCase<T, Args extends any[] = [void]> {
-  execute(...args: Args): Promise<T>;
+export interface IUseCase<Response, RequestArgs extends any[] = [void]> {
+  execute(...args: RequestArgs): Promise<Response>;
 }
