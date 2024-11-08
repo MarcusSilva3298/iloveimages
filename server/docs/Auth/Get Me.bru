@@ -1,0 +1,23 @@
+meta {
+  name: Get Me
+  type: http
+  seq: 3
+}
+
+get {
+  url: {{baseUrl}}/auth/me
+  body: none
+  auth: inherit
+}
+
+body:json {
+  {
+    "email": "admin@email.com",
+    "password": "123456"
+  }
+}
+
+script:post-response {
+  if (res.status !== 201) return
+  bru.setEnvVar('token', res.body.accessToken)
+}

@@ -1,4 +1,7 @@
-import { Body, Controller, Inject, Post } from '@nestjs/common';
+import { Body, Controller, Get, Inject, Post, UseGuards } from '@nestjs/common';
+import { User } from 'src/Domain/Entities/User';
+import { GetUser } from 'src/Presenters/Http/Decorators/user.decorator';
+import { AuthGuard } from 'src/Presenters/Http/Guards/auth.guard';
 import { IUseCase } from '../../../App/Ports/IUseCase';
 import { SignInDto } from '../../../Domain/Shared/Dtos/Auth/SignInDto';
 import { UserFactoryDto } from '../../../Domain/Shared/Dtos/User/UserFactoryDto';
@@ -13,6 +16,9 @@ export class AuthController {
 
     @Inject(AuthUseCasesEnum.SIGN_UP)
     private readonly signUpUseCase: IUseCase<ISignResponse, [SignInDto]>,
+
+    @Inject(AuthUseCasesEnum.GET_ME)
+    private readonly getMeUseCase: IUseCase<User, [string]>,
   ) {}
 
   @Post('/signIn')
@@ -23,5 +29,11 @@ export class AuthController {
   @Post('/signUp')
   signUp(@Body() body: UserFactoryDto): Promise<ISignResponse> {
     return this.signUpUseCase.execute(body);
+  }
+
+  @UseGuards(AuthGuard)
+  @Get('/me')
+  getMe(@GetUser() user: User): Promise<User> {
+    return this.getMeUseCase.execute(user.id);
   }
 }

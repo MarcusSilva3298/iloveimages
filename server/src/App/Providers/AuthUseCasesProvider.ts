@@ -1,5 +1,6 @@
 import { Provider } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
+import { GetMeUseCase } from 'src/App/UseCases/Auth/GetMeUseCase';
 import { AuthUseCasesEnum } from '../../Domain/Shared/Enums/AuthUseCasesEnum';
 import { UsersRepository } from '../../Infra/Database/repositories/users.repository';
 import { HashService } from '../../Infra/Services/hash.service';
@@ -30,5 +31,11 @@ export const authProviders: Provider[] = [
       hashService: IHashService,
       tokenSerice: ITokenService,
     ) => new SignUpUseCase(usersRepository, hashService, tokenSerice),
+  },
+  {
+    provide: AuthUseCasesEnum.GET_ME,
+    inject: [UsersRepository],
+    useFactory: (usersRepository: IUserRepository) =>
+      new GetMeUseCase(usersRepository),
   },
 ];
