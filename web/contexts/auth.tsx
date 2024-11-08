@@ -1,12 +1,20 @@
 "use client";
 
+import { CookiesEnum } from "@/enums/CookiesEnum";
 import { User } from "@/models/User";
 import { signInFormSchemaType } from "@/schemas/SignInSchema";
 import { signUpFormSchemaType } from "@/schemas/SignUpSchema";
 import { api } from "@/services/api";
+import CookiesService from "@/services/cookies";
 import ErrorService from "@/services/errors";
 import ToastService from "@/services/toast";
-import { createContext, ReactNode, useContext, useState } from "react";
+import {
+  createContext,
+  ReactNode,
+  useContext,
+  useEffect,
+  useState,
+} from "react";
 
 interface AuthContextProps {
   user: User | null;
@@ -27,9 +35,16 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
     await api
       .post("/auth/signIn", props)
-      .then(() => {
-        ToastService.success("Signed In sucefully!", "sucess-sign-in");
+      .then(({ data }) => {
+        CookiesService.saveToCookie(CookiesEnum.ACCESS_TOKEN, data.accessToken);
+        CookiesService.saveToCookie(
+          CookiesEnum.REFRESH_TOKEN,
+          data.refreshToken,
+        );
 
+        setUser(data.user);
+
+        ToastService.success("Signed In sucefully!", "sucess-sign-in");
         callback();
       })
       .catch((error) => {
@@ -46,9 +61,16 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
     await api
       .post("/auth/signUp", props)
-      .then(() => {
-        ToastService.success("Signed Up sucefully!", "sucess-sign-up");
+      .then(({ data }) => {
+        CookiesService.saveToCookie(CookiesEnum.ACCESS_TOKEN, data.accessToken);
+        CookiesService.saveToCookie(
+          CookiesEnum.REFRESH_TOKEN,
+          data.refreshToken,
+        );
 
+        setUser(data.user);
+
+        ToastService.success("Signed Up sucefully!", "sucess-sign-up");
         callback();
       })
       .catch((error) => {
@@ -59,6 +81,49 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       setAuthLoading(false);
     }, 350);
   }
+
+  function logout() {
+    setAuthLoading(true);
+
+    setUser(null);
+    Object.values(CookiesEnum).forEach((cookie) =>
+      CookiesService.removeCookie(cookie),
+    );
+
+    setTimeout(() => {
+      setAuthLoading(false);
+    }, 350);
+  }
+
+  async function getUserFromToken() {
+    setAuthLoading(true);
+
+    const token = CookiesService.getFromCookie(CookiesEnum.ACCESS_TOKEN);
+
+    if (!token) {
+      logout();
+      return;
+    }
+
+    await api
+      .get("/auth/me")
+      .then(({ data }) => setUser(data))
+      .catch((err) => {
+        ErrorService.handleError(err);
+
+        logout();
+      });
+
+    setTimeout(() => {
+      setAuthLoading(false);
+    }, 350);
+  }
+
+  useEffect(() => {
+    getUserFromToken();
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <AuthContext.Provider value={{ user, authLoading, signIn, signUp }}>
